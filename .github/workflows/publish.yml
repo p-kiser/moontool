@@ -1,0 +1,30 @@
+# Publishes to npm when a version tag such as v0.1.0 is pushed.
+#
+# Uses npm trusted publishing: npm trusts this workflow directly, so no npm token is stored
+# anywhere, and the package gets a provenance statement linking it to this repository and run.
+# One-time setup on npmjs.com: package settings → Trusted publishing → GitHub Actions, with
+# repository p-kiser/moontool and workflow file publish.yml.
+name: Publish
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://registry.npmjs.org
+          cache: npm
+      - run: npm ci
+      - name: Check that the tag matches package.json
+        run: test "v$(node -p 'require("./package.json").version')" = "$GITHUB_REF_NAME"
+      - run: npm publish

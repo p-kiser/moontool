@@ -1,0 +1,57 @@
+{
+  "name": "@pkiser/moontool",
+  "version": "0.1.0",
+  "description": "Phase of the Moon from a date, in TypeScript. Adapted from John Walker's Moontool.",
+  "keywords": [
+    "moon",
+    "moon phase",
+    "lunar phase",
+    "full moon",
+    "lunation",
+    "astronomy",
+    "moontool"
+  ],
+  "license": "MIT",
+  "author": "Pascal Kiser",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/p-kiser/moontool.git"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "!src/**/*.spec.ts",
+    "!src/fixtures.ts"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "prettier --check .",
+    "format": "prettier --write .",
+    "check": "npm run typecheck && npm run lint && npm test && npm run build",
+    "prepublishOnly": "npm run check"
+  },
+  "devDependencies": {
+    "prettier": "^3.8.1",
+    "typescript": "~6.0.2",
+    "vitest": "^5.0.0"
+  }
+}

@@ -1,9 +1,11 @@
-# Publishes to npm when a version tag such as v0.1.0 is pushed.
+# Stages a new version on npm when a version tag such as v0.1.1 is pushed. The version only goes
+# live once a maintainer approves it with two-factor authentication (see RELEASING.md).
 #
 # Uses npm trusted publishing: npm trusts this workflow directly, so no npm token is stored
-# anywhere, and the package gets a provenance statement linking it to this repository and run.
-# One-time setup on npmjs.com: package settings → Trusted publishing → GitHub Actions, with
-# repository p-kiser/moontool and workflow file publish.yml.
+# anywhere, and each version gets a provenance statement linking it to this repository and run.
+# The trusted publisher on npmjs.com (repository p-kiser/moontool, workflow publish.yml) may only
+# stage: it cannot publish directly or move dist-tags. So even a compromised dependency in this
+# workflow cannot release anything without that approval.
 name: Publish
 
 on:
@@ -15,7 +17,8 @@ permissions:
   id-token: write
 
 jobs:
-  publish:
+  stage:
+    name: Stage on npm
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -27,4 +30,5 @@ jobs:
       - run: npm ci
       - name: Check that the tag matches package.json
         run: test "v$(node -p 'require("./package.json").version')" = "$GITHUB_REF_NAME"
-      - run: npm publish
+      - run: npm run check
+      - run: npm stage publish .

@@ -46,8 +46,9 @@
     "typecheck": "tsc --noEmit",
     "lint": "prettier --check .",
     "format": "prettier --write .",
-    "check": "npm run typecheck && npm run lint && npm test && npm run build",
-    "prepublishOnly": "npm run check"
+    "check": "npm run typecheck && npm run lint && npm test && npm run build && npm run smoke",
+    "prepublishOnly": "npm run check",
+    "smoke": "node scripts/smoke.mjs"
   },
   "devDependencies": {
     "prettier": "^3.8.1",
